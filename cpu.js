@@ -196,13 +196,88 @@ class CPU {
 
             // Add register to register
             case instructions.ADD_REG_REG: {
-                const r1 = this.fetch();
-                const r2 = this.fetch();
+                const r1 = this.fetchRegisterIndex();
+                const r2 = this.fetchRegisterIndex();
                 const registerValue1 = this.registers.getUint16(r1);
                 const registerValue2 = this.registers.getUint16(r2);
                 this.setRegister('acc', registerValue1 + registerValue2);
                 return;
             }
+
+            // Add literal to register        
+            case instructions.ADD_LIT_REG: {
+                const literal = this.fetch();
+                const reg = this.fetchRegisterIndex(); 
+                const regValue = this.registers.getUint16(reg);
+                this.setRegister('acc', literal + regValue);
+                return;
+            } 
+
+            // Subtract literal from register value
+            case instructions.SUB_LIT_REG: {
+                const literal = this.fetch();
+                const reg = this.fetchRegisterIndex(); 
+                const regValue = this.registers.getUint16(reg);
+                this.setRegister('acc', regValue - literal);
+                return;
+            }
+
+            // Subtract register value from literal
+            case instructions.SUB_REG_LIT: {
+                const reg = this.fetchRegisterIndex(); 
+                const literal = this.fetch();
+                const regValue = this.registers.getUint16(reg);
+                this.setRegister('acc', literal - regValue);
+                return;
+            }
+
+            // Subtract register value from register value
+            case instructions.SUB_REG_REG: {
+                const r1 = this.fetchRegisterIndex();
+                const r2 = this.fetchRegisterIndex();
+                const registerValue1 = this.registers.getUint16(r1);
+                const registerValue2 = this.registers.getUint16(r2);
+                this.setRegister('acc', registerValue1 - registerValue2);
+                return;
+            }
+
+            // Increment value in register (in place)
+            case instructions.INC_REG: {
+                const reg = this.fetchRegisterIndex(); 
+                const oldValue = this.registers.getUint16(reg);
+                const newValue = oldValue + 1;
+                this.registers.setUint16(reg, newValue);
+                return;
+            }
+
+            // Decrement value in register (in place)
+            case instructions.INC_REG: {
+                const reg = this.fetchRegisterIndex(); 
+                const oldValue = this.registers.getUint16(reg);
+                const newValue = oldValue - 1;
+                this.registers.setUint16(reg, newValue);
+                return;
+            }
+
+            // Multiply literal by register value
+            case instructions.MUL_LIT_REG: {
+                const literal = this.fetch();
+                const reg = this.fetchRegisterIndex(); 
+                const regValue = this.registers.getUint16(reg);
+                this.setRegister('acc', literal * regValue);
+                return;
+            }
+
+            // Multiply register value by register value
+            case instructions.MUL_REG_REG: {
+                const r1 = this.fetchRegisterIndex();
+                const r2 = this.fetchRegisterIndex();
+                const registerValue1 = this.registers.getUint16(r1);
+                const registerValue2 = this.registers.getUint16(r2);
+                this.setRegister('acc', registerValue1 * registerValue2);
+                return;
+            }
+
 
             // Jump if not equal
             case instructions.JMP_NOT_EQ: {
