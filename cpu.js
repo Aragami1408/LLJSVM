@@ -19,8 +19,8 @@ class CPU {
             return map;
         }, {});
 
-        this.setRegister('sp', this.memory.byteLength - 1 - 1);
-        this.setRegister('fp', this.memory.byteLength - 1 - 1);
+        this.setRegister('sp', 0xffff - 1);
+        this.setRegister('fp', 0xffff - 1);
 
         this.stackFrameSize = 0;
     }
@@ -165,12 +165,41 @@ class CPU {
                 return;
             }
 
+            // Move literal to memory
+            case instructions.MOV_LIT_MEM: {
+                const literal = this.fetch16();
+                const address = this.fetch16();
+                this.memory.setUint16(address, literal);
+                return;
+            }
+
+            // Move register pointer to register
+            case instructions.MOV_REG_PTR_REG: {
+                const r1 = this.fetchRegisterIndex();
+                const r2 = this.fetchRegisterIndex();
+                const ptr = this.registers.getUint16(r1); 
+                const value = this.memory.getUint16(ptr);
+                this.registers.setUint16(r2, value);
+                return;
+            }
+
+            // Move value at [literal + register] to register
+            case instructions.MOV_LIT_OFF_REG: {
+                const baseAddress = this.fetch16();
+                const r1 = this.fetchRegisterIndex();
+                const r2 = this.fetchRegisterIndex();
+                const offset = this.registers.getUint16(r1);
+                const value = this.memory.getUint16(baseAddress + offset);
+                this.registers.setUint16(r2, value);
+                return;
+            }
+
             // Add register to register
             case instructions.ADD_REG_REG: {
                 const r1 = this.fetch();
                 const r2 = this.fetch();
-                const registerValue1 = this.registers.getUint16(r1 * 2);
-                const registerValue2 = this.registers.getUint16(r2 * 2);
+                const registerValue1 = this.registers.getUint16(r1);
+                const registerValue2 = this.registers.getUint16(r2);
                 this.setRegister('acc', registerValue1 + registerValue2);
                 return;
             }
@@ -232,12 +261,24 @@ class CPU {
                 return;
             }
 
+            // Half all computation
+            case instructions.HLT: {
+                return true;
+            }
+
         }
     }
 
     step() {
         const instruction = this.fetch();
         return this.execute(instruction);
+    }
+
+    run() {
+        const half = this.step();
+        if (!half) {
+            setImmediate(() => this.run());
+        }
     }
 }
 
