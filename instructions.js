@@ -16,7 +16,6 @@ const DEC_REG = 0x36;
 const MUL_LIT_REG = 0x20;
 const MUL_REG_REG = 0x21;
 
-
 const JMP_NOT_EQ = 0x15;
 const PSH_LIT = 0x16;
 const PSH_REG = 0x18;
