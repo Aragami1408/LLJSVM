@@ -251,7 +251,7 @@ class CPU {
             }
 
             // Decrement value in register (in place)
-            case instructions.INC_REG: {
+            case instructions.DEC_REG: {
                 const reg = this.fetchRegisterIndex(); 
                 const oldValue = this.registers.getUint16(reg);
                 const newValue = oldValue - 1;
@@ -270,14 +270,127 @@ class CPU {
 
             // Multiply register value by register value
             case instructions.MUL_REG_REG: {
-                const r1 = this.fetchRegisterIndex();
-                const r2 = this.fetchRegisterIndex();
-                const registerValue1 = this.registers.getUint16(r1);
-                const registerValue2 = this.registers.getUint16(r2);
-                this.setRegister('acc', registerValue1 * registerValue2);
+                const reg1 = this.fetchRegisterIndex();
+                const reg2 = this.fetchRegisterIndex();
+                const regValue1 = this.registers.getUint16(reg1);
+                const regValue2 = this.registers.getUint16(reg2);
+                this.setRegister('acc', regValue1 * regValue2);
                 return;
             }
 
+            // Left shift register by literal (in-place)
+            case instructions.LSF_REG_LIT: {
+                const reg = this.fetchRegisterIndex();
+                const literal = this.fetch();
+                const regValue = this.registers.getUint16(reg);
+                const result = regValue << literal;
+                this.registers.setUint16(reg, result);
+                return;
+            }
+
+            // Left shift register by register (in-place)
+            case instructions.LSF_REG_LIT: {
+                const reg1 = this.fetchRegisterIndex();
+                const reg2 = this.fetchRegisterIndex();
+                const regValue = this.registers.getUint16(reg1);
+                const shiftBy = this.registers.getUint16(reg2);
+                const result = regValue << shiftBy;
+                this.registers.setUint16(reg1, result);
+                return;
+            }
+
+            // Right shift register by literal (in-place)
+            case instructions.RSF_REG_LIT: {
+                const reg = this.fetchRegisterIndex();
+                const literal = this.fetch();
+                const regValue = this.registers.getUint16(reg);
+                const result = regValue >> literal;
+                this.registers.setUint16(reg, result);
+                return;
+            }
+
+            // Right shift register by register (in-place)
+            case instructions.RSF_REG_LIT: {
+                const reg1 = this.fetchRegisterIndex();
+                const reg2 = this.fetchRegisterIndex();
+                const regValue = this.registers.getUint16(reg1);
+                const shiftBy = this.registers.getUint16(reg2);
+                const result = regValue >> shiftBy;
+                this.registers.setUint16(reg1, result);
+                return;
+            }
+
+            // And register with literal
+            case instructions.AND_REG_LIT: {
+                const reg = this.fetchRegisterIndex();
+                const literal = this.fetch16();
+                const regValue = this.registers.getUint16(reg);
+                const result = regValue & literal;
+                this.setRegister('acc', result);
+                return;
+            }
+
+            // And register with register
+            case instructions.AND_REG_REG: {
+                const reg1 = this.fetchRegisterIndex();
+                const reg2 = this.fetchRegisterIndex();
+                const regValue1 = this.registers.getUint16(reg1);
+                const regValue2 = this.registers.getUint16(reg2);
+                const result = regValue1 & regValue2;
+                this.setRegister('acc', result);
+                return;
+            }
+
+            // Or register with literal
+            case instructions.OR_REG_LIT: {
+                const reg = this.fetchRegisterIndex();
+                const literal = this.fetch16();
+                const regValue = this.registers.getUint16(reg);
+                const result = regValue | literal;
+                this.setRegister('acc', result);
+                return;
+            }
+
+            // Or register with register
+            case instructions.OR_REG_REG: {
+                const reg1 = this.fetchRegisterIndex();
+                const reg2 = this.fetchRegisterIndex();
+                const regValue1 = this.registers.getUint16(reg1);
+                const regValue2 = this.registers.getUint16(reg2);
+                const result = regValue1 | regValue2;
+                this.setRegister('acc', result);
+                return;
+            }
+
+            // Xor register with literal
+            case instructions.XOR_REG_LIT: {
+                const reg = this.fetchRegisterIndex();
+                const literal = this.fetch16();
+                const regValue = this.registers.getUint16(reg);
+                const result = regValue ^ literal;
+                this.setRegister('acc', result);
+                return;
+            }
+
+            // Xor register with register
+            case instructions.XOR_REG_REG: {
+                const reg1 = this.fetchRegisterIndex();
+                const reg2 = this.fetchRegisterIndex();
+                const regValue1 = this.registers.getUint16(reg1);
+                const regValue2 = this.registers.getUint16(reg2);
+                const result = regValue1 ^ regValue2;
+                this.setRegister('acc', result);
+                return;
+            }
+
+            // Not
+            case instructions.NOT: {
+                const reg = this.fetchRegisterIndex();
+                const regValue = this.registers.getUing16(reg);
+
+                const result = (~regValue) & 0xffff;
+                this.setRegister('acc', result);
+            }
 
             // Jump if not equal
             case instructions.JMP_NOT_EQ: {
