@@ -386,14 +386,14 @@ class CPU {
             // Not
             case instructions.NOT: {
                 const reg = this.fetchRegisterIndex();
-                const regValue = this.registers.getUing16(reg);
+                const regValue = this.registers.getUint16(reg);
 
                 const result = (~regValue) & 0xffff;
                 this.setRegister('acc', result);
             }
 
-            // Jump if not equal
-            case instructions.JMP_NOT_EQ: {
+            // Jump if literal not equal
+            case instructions.JNE_LIT: {
                 const value = this.fetch16();
                 const address = this.fetch16();
 
@@ -403,7 +403,150 @@ class CPU {
 
                 return;
             }
-            
+
+            // Jump if register not equal
+            case instructions.JNE_REG: {
+                const reg = this.fetchRegisterIndex();
+                const regValue = this.registers.getUint16(reg);
+                const address = this.fetch16();
+
+                if (regValue !== this.getRegister('acc')) {
+                    this.setRegister('ip', address);
+                }
+
+                return;
+            }
+
+            // Jump if register equal
+            case instructions.JEQ_REG: {
+                const reg = this.fetchRegisterIndex();
+                const address = this.fetch16();
+                const regValue = this.registers.getUint16(reg);
+
+                if (regValue === this.getRegister('acc')) {
+                    this.setRegister('ip', address);
+                }
+
+                return;
+                
+            }
+
+            // Jump if literal equal
+            case instructions.JEQ_LIT: {
+                const literal = this.fetch16();
+                const address = this.fetch16();
+
+                if(literal === this.getRegister('acc')) {
+                    this.setRegister('ip', address);
+                }
+
+                return;
+            }
+
+            // Jump if register less than
+            case instructions.JLT_REG: {
+                const reg = this.fetchRegisterIndex();
+                const address = this.fetch16();
+                const regValue = this.registers.getUint16(reg);
+
+                if (regValue < this.getRegister('acc')) {
+                    this.setRegister('ip', address);
+                }
+
+                return;
+                
+            }
+
+            // Jump if literal less than
+            case instructions.JLT_LIT: {
+                const literal = this.fetch16();
+                const address = this.fetch16();
+
+                if(literal < this.getRegister('acc')) {
+                    this.setRegister('ip', address);
+                }
+
+                return;
+            }
+
+            // Jump if register greater than
+            case instructions.JGT_REG: {
+                const reg = this.fetchRegisterIndex();
+                const address = this.fetch16();
+                const regValue = this.registers.getUint16(reg);
+
+                if (regValue > this.getRegister('acc')) {
+                    this.setRegister('ip', address);
+                }
+
+                return;
+                
+            }
+
+            // Jump if literal greater than
+            case instructions.JGT_LIT: {
+                const literal = this.fetch16();
+                const address = this.fetch16();
+
+                if(literal > this.getRegister('acc')) {
+                    this.setRegister('ip', address);
+                }
+
+                return;
+            }
+
+            // Jump if register less than or equal
+            case instructions.JLE_REG: {
+                const reg = this.fetchRegisterIndex();
+                const address = this.fetch16();
+                const regValue = this.registers.getUint16(reg);
+
+                if (regValue <= this.getRegister('acc')) {
+                    this.setRegister('ip', address);
+                }
+
+                return;
+                
+            }
+
+            // Jump if literal less than or equal
+            case instructions.JLE_LIT: {
+                const literal = this.fetch16();
+                const address = this.fetch16();
+
+                if(literal <= this.getRegister('acc')) {
+                    this.setRegister('ip', address);
+                }
+
+                return;
+            }
+
+            // Jump if register greater than or equal
+            case instructions.JGE_REG: {
+                const reg = this.fetchRegisterIndex();
+                const address = this.fetch16();
+                const regValue = this.registers.getUint16(reg);
+
+                if (regValue >= this.getRegister('acc')) {
+                    this.setRegister('ip', address);
+                }
+
+                return;
+                
+            }
+
+            // Jump if literal greater than or equal
+            case instructions.JGE_LIT: {
+                const literal = this.fetch16();
+                const address = this.fetch16();
+
+                if(literal >= this.getRegister('acc')) {
+                    this.setRegister('ip', address);
+                }
+
+                return;
+            }
+
             // Push Literal
             case instructions.PSH_LIT: {
                 const value = this.fetch16();

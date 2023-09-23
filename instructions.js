@@ -28,7 +28,7 @@ const XOR_REG_LIT = 0x31;
 const XOR_REG_REG = 0x32;
 const NOT = 0x34;
 
-const JMP_NOT_EQ = 0x15;
+const JNE_LIT = 0x15;
 const JNE_REG = 0x40;
 const JEQ_REG = 0x3E;
 const JEQ_LIT = 0x41;
@@ -85,18 +85,18 @@ module.exports = {
     NOT,
 
     // BRANCHING INSTRUCTIONS
-    JMP_NOT_EQ,
-	JNE_REG,
-	JEQ_REG,
-	JEQ_LIT,
-	JLT_REG,
-	JLT_LIT,
-	JGT_REG,
-	JGT_LIT,
-	JLE_REG,
-	JLE_LIT,
-	JGE_REG,
-	JGE_LIT,
+    JNE_LIT,
+    JNE_REG,
+    JEQ_REG,
+    JEQ_LIT,
+    JLT_REG,
+    JLT_LIT,
+    JGT_REG,
+    JGT_LIT,
+    JLE_REG,
+    JLE_LIT,
+    JGE_REG,
+    JGE_LIT,
 
     // STACK INSTRUCTIONS
     PSH_LIT,
